@@ -1,3 +1,3 @@
-# Template app.
+# Rabbitmq mock
 
-template. [Документация](docs/README.md)
+Mock сервер для RabbitMQ. [Документация](docs/README.md)

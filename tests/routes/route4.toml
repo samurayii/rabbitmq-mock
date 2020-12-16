@@ -1,0 +1,11 @@
+[route]
+    description = "путь #4"
+    headers = [
+        "header11"
+    ]
+    properties = [
+        "replyTo"
+    ]
+[body]
+    [body.content]
+        text = "путь #4"

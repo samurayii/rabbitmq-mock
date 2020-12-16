@@ -1,0 +1,9 @@
+[route]
+    description = "путь #3"
+    headers = [
+        "header11",
+        "header2=header2-val"
+    ]
+[body]
+    [body.content]
+        text = "путь #3"

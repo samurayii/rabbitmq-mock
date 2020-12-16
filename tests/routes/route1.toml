@@ -1,0 +1,17 @@
+[route]
+    description = "путь #1"
+    headers = [
+        "header1",
+        "header2=header2-val",
+        "^header3",
+        "^header4=header4-val"
+    ]
+    properties = [
+        "key1",
+        "key2=key2-val",
+        "^key3",
+        "^key4=key4-val"
+    ]
+[body]
+    [body.content]
+        text = "путь #1"

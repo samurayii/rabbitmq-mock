@@ -1,0 +1,151 @@
+{
+    "type": "object",
+    "properties": {
+        "route": {
+            "type": "object",
+            "default": {},
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "default": "",
+                    "minLength": 0,
+                    "maxLength": 256
+                },
+                "headers": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 256
+                    },
+                    "minItems": 0
+                },
+                "properties": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 256
+                    },
+                    "minItems": 0
+                },
+                "body": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 256
+                    },
+                    "minItems": 0
+                }
+            },
+            "required": [
+                "description",
+                "headers",
+                "properties",
+                "body"
+            ]
+        },
+        "body": {
+            "type": "object",
+            "default": {},
+            "properties": {
+                "destination": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 256
+                },
+                "type": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 256
+                },
+                "routing_key": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 256
+                },
+                "clone_headers": {
+                    "type": "boolean",
+                    "default": true,
+                    "enum": [true, false]
+                },
+                "clone_properties": {
+                    "type": "boolean",
+                    "default": true,
+                    "enum": [true, false]
+                },
+                "headers": {
+                    "type": "object"
+                },
+                "properties": {
+                    "type": "object"
+                },
+                "handler": {
+                    "default": [],
+                    "anyOf":[
+                        {
+                            "type": "string",
+                            "minLength": 0,
+                            "maxLength": 256
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "minLength": 0,
+                                "maxLength": 256
+                            },
+                            "minItems": 0
+                        }
+                    ]
+                },
+                "content": {
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "file": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "minLength": 0,
+                                    "maxLength": 256
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "enum": ["json","buffer","text"]
+                                }
+                            },
+                            "required": [
+                                "path",
+                                "type"
+                            ]
+                        },
+                        "text": {
+                            "type": "string",
+                            "minLength": 0
+                        },
+                        "json": {
+                            "type": "object"
+                        }
+                    },
+                    "required": []
+                }
+            },
+            "required": [
+                "content",
+                "clone_headers",
+                "clone_properties",
+                "handler"
+            ]
+        }
+    },
+    "required": [
+        "route",
+        "body"
+    ]
+}

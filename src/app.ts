@@ -1,12 +1,11 @@
+#!/usr/bin/env node
 import config from "./lib/entry";
 import { Logger } from "logger-flx";
 import { Singleton } from "di-ts-decorators";
 import { KoaD } from "koa-ts-decorators";
 import { Authorization } from "./lib/authorization";
-
-console.log(JSON.stringify(config, null, 4));
-
 import "./http";
+import { Mocks } from "./lib/mocks";
 
 const logger = new Logger(config.logger);
 const authorization = new Authorization(config.authorization);
@@ -15,12 +14,17 @@ Singleton("config", config);
 Singleton(Logger.name, logger);
 
 const api_server = new KoaD(config.api, "api-server");
+const mocks = new Mocks(config.mock, logger);
+
+Singleton(Mocks.name, mocks);
 
 const bootstrap = async () => {
 
     try {
 
         api_server.context.authorization = authorization;
+
+        await mocks.run();
 
         await api_server.listen( () => {
             logger.info(`[api-server] listening on network interface ${api_server.config.listening}${api_server.prefix}`);
@@ -36,7 +40,8 @@ const bootstrap = async () => {
 
 bootstrap();
 
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
     logger.log("Termination signal received");
+    await mocks.close();
     process.exit();
 });

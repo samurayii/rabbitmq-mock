@@ -1,0 +1,294 @@
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+        },
+        "enable": {
+            "type": "boolean",
+            "default": true,
+            "enum": [true, false]
+        },
+        "reconnect_interval": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1
+        },
+        "v_host": {
+            "type": "string",
+            "default": "/",
+            "minLength": 1,
+            "maxLength": 64
+        },
+        "url": {
+            "type": "string",
+            "default": "guest:guest@localhost:5672",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "user": {
+            "type": "string",
+            "default": "guest",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "password": {
+            "type": "string",
+            "default": "guest",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "host": {
+            "type": "string",
+            "default": "localhost",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "port": {
+            "type": "integer",
+            "default": 5672,
+            "minimum": 1,
+            "maximum": 65535
+        },
+        "heartbeat": {
+            "type": "integer",
+            "default": 30,
+            "minimum": 1
+        },
+        "routes_path": {
+            "type": "string",
+            "default": "routes",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "handlers_path": {
+            "type": "string",
+            "default": "handlers",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "thread": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+        },
+        "state_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+        },
+        "input": {
+            "type": "object",
+            "default": {},
+            "properties": {
+                "codec": {
+                    "type": "string",
+                    "default": "json",
+                    "enum": ["json", "text", "buffer"]
+                },
+                "fast_ack": {
+                    "type": "boolean",
+                    "default": true,
+                    "enum": [true, false]
+                },
+                "parallel": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1
+                },
+                "v_host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                },
+                "reconnect_interval": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "heartbeat": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "user": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                },
+                "queue": {
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                        },
+                        "pattern": {
+                            "type": "string",
+                            "default": "",
+                            "minLength": 0,
+                            "maxLength": 128
+                        },
+                        "options": {
+                            "default": {},
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "pattern",
+                        "options"
+                    ]
+                },
+                "exchange": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                        },
+                        "type": {
+                            "type": "string",
+                            "default": "fanout",
+                            "minLength": 1,
+                            "maxLength": 64
+                        },
+                        "options": {
+                            "default": {},
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "type",
+                        "options"
+                    ]
+                }
+            },
+            "required": [
+                "codec",
+                "fast_ack",
+                "parallel",
+                "queue"
+            ]
+        },
+        "output": {
+            "type": "object",
+            "default": {},
+            "properties": {
+                "default": {
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "default": "exchange",
+                            "enum": ["exchange","queue"]
+                        },
+                        "destination": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                        },
+                        "routing_key": {
+                            "type": "string",
+                            "default": "",
+                            "minLength": 0,
+                            "maxLength": 256
+                        },
+                        "options": {
+                            "default": {},
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "destination",
+                        "routing_key",
+                        "options"
+                    ]
+                },
+                "v_host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                },
+                "reconnect_interval": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "heartbeat": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "user": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                }
+            },
+            "required": [
+                "default"
+            ]
+        }
+    },
+    "required": [
+        "name",
+        "enable",
+        "reconnect_interval",
+        "host",
+        "port",
+        "v_host",
+        "password",
+        "heartbeat",
+        "user",
+        "routes_path",
+        "handlers_path",
+        "input",
+        "url",
+        "output"
+    ]
+}

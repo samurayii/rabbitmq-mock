@@ -1,0 +1,27 @@
+{
+    "route": {
+        "description": "путь №5 json",
+        "properties": [
+            "^key1"
+        ],
+        "body": [
+            "key1"
+        ]
+    },
+    "body": {
+        "handler": "test_handler",
+        "destination": "exit",
+        "type": "exchange",
+        "routing_key": "{{state.key1}} {{destination}}",
+        "headers": {
+            "hh": "asdas {{headers.header122}}"
+        },
+        "properties": {
+            "gg": "asdsadd {{type}}"
+        },
+        "clone_properties": false,
+        "content": {
+            "text": "путь №5 json {{type}} {{properties.deliveryMode}} {{headers.header122}} {{state.key1}} {{body.key1}}"
+        }
+    }
+}

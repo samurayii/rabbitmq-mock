@@ -3,12 +3,14 @@ import * as chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import * as finder from "find-package-json";
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import jtomler from "jtomler";
 import json_from_schema from "json-from-default-schema";
 import * as auth_user_schema from "./schemes/auth_user.json";
 import * as config_schema from "./schemes/config.json";
+import * as mock_schema from "./schemes/mock.json";
 import { IAppConfig } from "./config.interface";
+import { IMockConfig } from "./mock";
  
 const pkg = finder(__dirname).next().value;
 
@@ -38,13 +40,40 @@ const config: IAppConfig = <IAppConfig>json_from_schema(jtomler(full_config_path
 
 for (const item of config.authorization.users) {
 
-    const ajv_user_item = new Ajv();
-    const validate_user_item = ajv_user_item.compile(auth_user_schema);
+    const ajv_item = new Ajv();
+    const validate = ajv_item.compile(auth_user_schema);
 
-    if (!validate_user_item(item)) {
-        console.error(chalk.red(`[ERROR] Config authorization.users parsing error. Schema errors:\n${JSON.stringify(validate_user_item.errors, null, 2)}`));
+    if (!validate(item)) {
+        console.error(chalk.red(`[ERROR] Config authorization.users parsing error. Schema errors:\n${JSON.stringify(validate.errors, null, 2)}`));
         process.exit(1);
     }
+
+}
+
+let i = 0;
+const name_list: string[] = [];
+
+for (let item of config.mock) {
+
+    const ajv_item = new Ajv();
+    const validate = ajv_item.compile(mock_schema);
+    
+    item = <IMockConfig>json_from_schema(item, mock_schema);
+
+    if (!validate(item)) {
+        console.error(chalk.red(`[ERROR] Config mock parsing error. Schema errors:\n${JSON.stringify(validate.errors, null, 2)}`));
+        process.exit(1);
+    }
+
+    if (name_list.includes(item.name)) {
+        console.error(chalk.red(`[ERROR] Mock server "${item.name}" already exist.`));
+        process.exit(1);
+    }
+
+    name_list.push(item.name);
+    config.mock[i] = item;
+    
+    i++;  
 
 }
 

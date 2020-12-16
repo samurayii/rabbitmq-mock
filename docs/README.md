@@ -2,17 +2,24 @@
 
 ## Информация
 
-template. 
+Мок сервер для rabbitmq. Принцип состоит в том, что rabbitmq-mock подключается к очереди rabbitmq как конечная точка, отвечающая на запросы в указанную очередь.
 
 ## Оглавление:
 - [Установка](#install)
 - [Ключи запуска](#launch)
 - [Конфигурация](#configuration)
 - [HTTP API](API.md)
+- [Состояние](STATE.md)
+- [Маршруты](ROUTES.md)
+- [Обработчики](HANDLERS.md)
+- [Docker](DOCKER.md)
+- [Примеры](../examples)
 
 ## <a name="install"></a> Установка и использование
 
-пример строки запуска: `node /template/app.js -c config.toml`
+установка: `npm install rabbitmq-mock -g`
+
+использование: `rabbitmq-mock -с config.toml`
 
 ## <a name="launch"></a> Таблица ключей запуска
 Ключ | Описание
@@ -27,10 +34,16 @@ template.
 
 ### Секции файла конфигурации:
 
-- **logger** - настрока логгера (переменная среды: RABBITMQ_MOCK_LOGGER)
-- **authorization** - настрока авторизации (переменная среды: RABBITMQ_MOCK_AUTHORIZATION)
+- **logger** - настройка логгера (переменная среды: RABBITMQ_MOCK_LOGGER)
+- **authorization** - настройка авторизации (переменная среды: RABBITMQ_MOCK_AUTHORIZATION)
 - **api** - настройка API (переменная среды: RABBITMQ_MOCK_API)
-- **api.parsing** - настройка парсинга (пакет: https://github.com/dlau/koa-body#readme, переменная среды: RABBITMQ_MOCK_API_PARSING)
+- **api.parsing** - настройка паркинга (пакет: https://github.com/dlau/koa-body#readme, переменная среды: RABBITMQ_MOCK_API_PARSING)
+- **mock** - массив настроек mock серверов (переменная среды: RABBITMQ_MOCK_MOCK)
+- **mock[].input** - настройка входа
+- **mock[].input.queue** - массив настроек mock серверов
+- **mock[].input.exchange** - настройки точки обмена не обязательно (НЕ ОБЯЗЯТЕЛЬНА)
+- **mock[].output** - настройка выхода
+- **mock[].output.default** - значения по умолчанию для маршрутов
 
 ### Пример файла конфигурации config.toml
 ```toml
@@ -40,7 +53,7 @@ template.
     timestamp = false   # выводить время лога (true или false)
     type = true         # выводить тип лога (true или false)
 
-[authorization]                     # настрока авторизации
+[authorization]                     # настройка авторизации
     [[authorization.users]]         # массив пользователей
         username = "username"       # имя пользователя
         password = "password"       # пароль пользователя
@@ -72,13 +85,55 @@ template.
         json_strict = true              # строгий режим парсинга json
         methods = ["POST"]              # список методов для парсинга
 
+[[mock]]                                    # массив настроек mock серверов
+    name = "my_name_mock"                   # имя mock сервера, должно быть уникальным
+    enable = true                           # активация mock сервера
+    thread = ""                             # имя потока (НЕ ОБЯЗЯТЕЛЬНА)
+    state_path = "state"                    # папка/файл в формате json/toml/yml начального состояния сервера (НЕ ОБЯЗЯТЕЛЬНА)
+    routes_path = "routes"                  # папка с маршрутами
+    handlers_path = "handlers"              # папка с процессорами
+    v_host = "/"                            # виртуальный хост
+    reconnect_interval = 10                 # интервал переподключения
+    url = "user:password@localhost:5672"    # строка подключения
+    heartbeat = 30                          # сердцебиение
+    [mock.input]                                # настройка входа
+        parallel = 1                            # количество параллельных запросов
+        codec = "json"                          # кодек разбора сообщения (json, text или buffer)
+        fast_ack = true                         # подтверждение сразу после получения сообщения
+        #v_host = "/"                           # виртуальный хост
+        #reconnect_interval = 10                # интервал переподключения
+        #url = "user:password@localhost:5672"   # строка подключения
+        #heartbeat = 30                         # сердцебиение
+        [mock.input.queue]                      # настройка очереди
+            name = ""                           # имя очереди
+            pattern = ""                        # паттерт для маршрутизации
+            [mock.input.queue.options]          # параметры rabbitmq для очереди
+                autoDelete = false             
+                durable = true                 
+        [mock.input.exchange]                   # настройки точки обмена не обязательно (НЕ ОБЯЗЯТЕЛЬНА)
+            name = "logs"                       # имя точки обмена
+            type = "fanout"                     # тип точки обмена
+            [mock.input.exchange.options]       # параметры точки обмена для rabbitmq
+                durable = true
+                autoDelete = false
+    [mock.output]                               # настройка выхода
+        #v_host = "/"                           # виртуальный хост
+        #reconnect_interval = 10                # интервал переподключения
+        #url = "user:password@localhost:5672"   # строка подключения
+        #heartbeat = 30                         # сердцебиение
+        [mock.output.default]                   # значения по умолчанию
+            type = "exchange"                       # тип точки назначения (queue или exchange)
+            destination = ""                        # имя точки назначения
+            routing_key = ""                        # ключ маршрутизации
+            [mock.output.default.options]           # настройки сообщений
+                persistent = true
 ```
 
 ### Таблица параметров конфигурации
 
 | Параметр | Тип | Значение | Описание |
 | ----- | ----- | ----- | ----- |
-| logger.mode |строка | prod | режим отображения prod, dev или debug |
+| logger.mode | строка | prod | режим отображения prod, dev или debug |
 | logger.enable | логический | true | активация логгера |
 | logger.timestamp | логический | false | выводить время лога (true или false) |
 | logger.type | логический | true | выводить тип лога (true или false) |
@@ -105,6 +160,37 @@ template.
 | api.parsing.urlencoded | логический | true | парсинг данных urlencoded |
 | api.parsing.json_strict | логический | true | строгий режим парсинга json |
 | api.parsing.methods | строка[] | ["POST"] | список методов для парсинга POST, PUT и/или PATCH |
+| mock[].name | строка |  | имя mock сервера, должно быть уникальным |
+| mock[].enable | логический | true | активация mock сервера |
+| mock[].thread | строка | prod | имя потока (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].state_path | строка |  | папка/файл в формате json/toml/yml начального состояния сервера (НЕ ОБЯЗЯТЕЛЬНА) [подробнее](STATE.md) |
+| mock[].routes_path | строка | routes | папка с маршрутами [подробнее](ROUTES.md) |
+| mock[].handlers_path | строка | handlers | папка с процессорами [подробнее](HANDLERS.md) |
+| mock[].v_host | строка | / | виртуальный хост по умолчанию (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].reconnect_interval | число | 10 | интервал переподключения по умолчанию (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].url | строка | guest:guest@localhost:5672 | строка подключения по умолчанию (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].heartbeat | число | 30 | сердцебиение по умолчанию (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].input.parallel | число | 1 | количество параллельных запросов |
+| mock[].input.codec | строка | json | кодек разбора сообщения (json, text или buffer) |
+| mock[].input.fast_ack | логический | true | подтверждение сразу после получения сообщения |
+| mock[].input.v_host | строка | | виртуальный хост для входа (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].input.reconnect_interval | число | | интервал переподключения для входа  (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].input.url | строка | | строка подключения для входа (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].input.heartbeat | число | | сердцебиение для входа (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].input.queue.name | строка | | имя очереди |
+| mock[].input.queue.pattern | строка | | паттерт для маршрутизации |
+| mock[].input.queue.options | объект | {} | параметры rabbitmq для очереди |
+| mock[].input.exchange.name | строка | | имя точки обмена |
+| mock[].input.exchange.type | строка | fanout | тип точки обмена |
+| mock[].input.exchange.options | объект | {} | параметры точки обмена для rabbitmq |
+| mock[].output.v_host | строка | | виртуальный хост для выхода (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].output.reconnect_interval | число | | интервал переподключения для выхода  (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].output.url | строка | | строка подключения для выхода (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].output.heartbeat | число | | сердцебиение для выхода (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].output.default.type | строка | exchange | тип точки назначения (queue или exchange) |
+| mock[].output.default.destination | строка | | имя точки назначения |
+| mock[].output.default.routing_key | строка | | ключ маршрутизации (НЕ ОБЯЗЯТЕЛЬНА) |
+| mock[].output.default.options | объект | {} | настройки сообщений |
 
 ### Настройка через переменные среды
 

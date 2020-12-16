@@ -1,0 +1,70 @@
+# пример файла маршрута
+[route]                         # настройка маршрутизации
+    description = ""            # описание маршрута
+    headers = [                 # массив наборов заголовков
+        "header1",                  # наличие заголовка
+        "header2=header2-val",      # наличие заголовка с определённым значение
+        "^header3",                 # исключение заголовка
+        "^header4=header4-val"      # исключение заголовка с определённым значение
+    ]
+    properties = [          # массив наборов свойств
+        "userId",                   # наличие свойства
+        "appId=fsdfsdfdfsdf",       # наличие свойства с определённым значение
+        "^clusterId",               # исключение свойства
+        "^replyTo=sdfdsfsdfdsf"     # исключение свойства с определённым значение
+        # возможный список свойств:
+        #   - contentType
+        #   - contentEncoding
+        #   - deliveryMode
+        #   - priority
+        #   - correlationId
+        #   - replyTo
+        #   - expiration
+        #   - messageId
+        #   - timestamp
+        #   - type
+        #   - userId
+        #   - appId
+        #   - clusterId
+    ]
+    body = [                # массив наборов ключей (только если сообщение в формате json)
+        "key1",             # наличие ключа
+        "key2=key2-val",    # наличие ключа с определённым значение
+        "^key3",            # исключение ключа
+        "^key4=key4-val"    # исключение ключа с определённым значение
+    ]
+[body]
+    destination = "exit"            # имя точки назначения сообщения
+    type = "exchange"               # тип точки назначения (queue или exchange)
+    routing_key = ""                # ключ маршрутизации rabbitmq
+    handler = "handler_name"        # имя обработчика маршрута, это значение может быть массивом для настройки конвейера обработки
+    #handler = ["handler_name1", "handler_name2"]     
+    clone_headers = true            # клонировать заголовки из исходного сообщения
+    clone_properties = true         # клонировать свойства из исходного сообщения
+    [body.headers]                  # заголовки сообщения rabbitmq
+        header1 = "header1-val"
+    [body.properties]               # свойства сообщения rabbitmq
+        replyTo = "val-1"
+        # возможный список свойств:
+        #   - contentType
+        #   - contentEncoding
+        #   - deliveryMode
+        #   - priority
+        #   - correlationId
+        #   - replyTo
+        #   - expiration
+        #   - messageId
+        #   - timestamp
+        #   - type
+        #   - userId
+        #   - appId
+        #   - clusterId
+    [body.content]                              # тело итогового сообщения text, file или json
+        text = "asdadasdad"                     # тело сообщения как текст
+        [body.content.file]                     # Загрузить тело сообщения из файла
+            type = "json"                       # тип содержимого файла json, buffer или text
+            path = "./tests/files/file1.json"   # путь к файлу
+        [body.content.json]                     # тело сообщения как json документ
+            key1 = "key1-val"
+            key2 = "key2-val"
+            key3 = "key3-val"

@@ -1,0 +1,9 @@
+# пример файла состояния
+key1 = "key1-val"
+key2 = 100
+key3 = true
+key4 = ["num1"]
+[key5]
+    sub-key5-key1 = "sub-key5-key1-val"
+    sub-key5-key2 = "sub-key5-key2-val"
+    sub-key5-key3 = "sub-key5-key3-val"

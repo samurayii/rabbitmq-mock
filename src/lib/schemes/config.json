@@ -245,11 +245,21 @@
                 "env",
                 "parsing"
             ]
+        },
+        "mock": {
+            "type": "array",
+            "env": "RABBITMQ_MOCK_MOCK",
+            "default": [],
+            "items": {
+                "type": "object"
+            },
+            "minItems": 1
         }
     },
     "required": [
         "logger",
         "authorization",
-        "api"
+        "api",
+        "mock"
     ]
 }

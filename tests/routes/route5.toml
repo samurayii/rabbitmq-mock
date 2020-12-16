@@ -1,0 +1,8 @@
+[route]
+    description = "путь #5 toml"
+    properties = [
+        "^key1"
+    ]
+[body]
+    [body.content]
+        text = "путь #5 toml"

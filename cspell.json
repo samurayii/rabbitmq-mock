@@ -1,9 +1,12 @@
 {
     "version": "0.1",
     "words": [
+        "binded",
         "healthcheck",
         "jtomler",
         "Nuzhnov",
+        "prefetch",
+        "Rabbitmq",
         "samuray"
     ]
 }

@@ -1,0 +1,36 @@
+[logger]
+    mode = "debug"
+    timestamp = "time"
+
+[authorization]
+    [[authorization.users]]
+        username = "username"
+        password = "password"
+
+[api]
+    enable = true
+    env = "development"
+    [api.parsing]
+        enable = true
+
+[[mock]]
+    name = "mock1"
+    fast_ack = false
+    url = "root:password@localhost:5672"
+    routes_path = "tests/routes"
+    handlers_path = "tests/handlers"
+    state_path = "tests/state"
+    [mock.input]
+        [mock.input.queue]
+            name = "logs1"
+        [mock.input.exchange]
+            name = "logs"
+            type = "fanout"
+            [mock.input.exchange.options]
+                durable = true
+                autoDelete = false
+    [mock.output]
+        [mock.output.default]
+            destination = "exit"
+            [mock.output.default.options]
+                persistent = true

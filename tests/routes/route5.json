@@ -21,7 +21,9 @@
         },
         "clone_properties": false,
         "content": {
-            "text": "путь №5 json {{type}} {{properties.deliveryMode}} {{headers.header122}} {{state.key1}} {{body.key1}}"
+            "json": {
+                "text": "путь №5 json {{type}} {{properties.deliveryMode}} {{headers.header122}} {{state.key1}} {{body.key1}}"
+            }
         }
     }
 }

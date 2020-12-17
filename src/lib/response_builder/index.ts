@@ -101,6 +101,7 @@ console.log("--------");
 
             if (typeof destination.content.json === "object") {
                 result_message.body = JSON.parse(JSON.stringify(destination.content.json));
+
             } else {
                 result_message.body = JSON.parse(`${destination.content.json}`);
             }
@@ -127,7 +128,7 @@ console.log("--------");
 
         if (typeof result_message.body === "object") {
             const template = handlebars.compile(JSON.stringify(result_message.body));
-            result_message.body = template(handlebars_context);
+            result_message.body = JSON.parse(template(handlebars_context));
         }
 
         if (typeof result_message.body === "string" || typeof result_message.body === "number") {
@@ -142,17 +143,17 @@ console.log("--------");
         result_message.properties = JSON.parse(properties_template(handlebars_context));
 
         if (destination.destination !== undefined) {
-            const template = handlebars.compile(result_message.destination);
+            const template = handlebars.compile(destination.destination);
             result_message.destination = template(handlebars_context);
         }
 
         if (destination.type !== undefined) {
-            const template = handlebars.compile(result_message.type);
+            const template = handlebars.compile(destination.type);
             result_message.type = template(handlebars_context);
         }
 
         if (destination.routing_key !== undefined) {
-            const template = handlebars.compile(result_message.routing_key);
+            const template = handlebars.compile(destination.routing_key);
             result_message.routing_key = template(handlebars_context);
         }
 
@@ -175,7 +176,6 @@ console.log("--------");
             }
 
         }
-
 /*
         console.log("response build (result) -----");
         console.log("original message:");

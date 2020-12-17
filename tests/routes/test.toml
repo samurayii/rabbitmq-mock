@@ -1,0 +1,18 @@
+[route]
+    description = "Авторизация зарегистрированного пользователя"
+    body = [
+        "UserAction=UserInfo"
+    ]
+[body]
+    [body.content]
+        [body.content.json]
+            GuidOperation = "{{body.GuidOperation}}"
+			Mail = "user mail"
+			IsMailValidate = true
+			Name = "Test user"
+			Password = "10000.ZTgyMiWIX7gFoazrQFzdqA==.L079HFs1bkZnelqOY8bUJjYBshWRTcVjYAfDPBIoWPk="
+			IsPasswordTemp = false
+			RoleName = "root"
+			RoleValue = "root"
+			IsBlocked = false
+			IsFound = true

@@ -2,6 +2,7 @@ route:
     description: "путь №5 yml"
     properties:
         - "^key1"
+        - "sdasdadas"
 body:
     content:
         text: "путь #5 yml"

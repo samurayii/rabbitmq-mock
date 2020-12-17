@@ -1,7 +1,8 @@
 [route]
     description = "путь #5 toml"
     properties = [
-        "^key1"
+        "^key1",
+        "asdasdasd"
     ]
 [body]
     [body.content]

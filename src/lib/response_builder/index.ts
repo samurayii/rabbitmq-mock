@@ -11,9 +11,9 @@ import * as chalk from "chalk";
 export * from "./interfaces";
 
 type THandlebarsContext = {
-    destination: string
-    type: string
-    routing_key: string
+    destination?: string
+    type?: string
+    routing_key?: string
     handler: string | string[]
     headers: {
         [key: string]: string
@@ -47,18 +47,6 @@ console.log("--------");
             body: ""
         };
 
-        if (destination.destination !== undefined) {
-            result_message.destination = destination.destination;
-        }
-
-        if (destination.type !== undefined) {
-            result_message.type = destination.type;
-        }
-
-        if (destination.routing_key !== undefined) {
-            result_message.routing_key = destination.routing_key;
-        }
-
         const handlebars_context: THandlebarsContext = {
             destination: destination.destination,
             type: destination.type,
@@ -68,6 +56,18 @@ console.log("--------");
             handler: destination.handler,
             state: state
         };
+
+        if (destination.destination !== undefined) {
+            handlebars_context.destination = destination.destination;
+        }
+
+        if (destination.type !== undefined) {
+            handlebars_context.type = destination.type;
+        }
+
+        if (destination.routing_key !== undefined) {
+            handlebars_context.routing_key = destination.routing_key;
+        }
 
         if (Buffer.isBuffer(message.body) === false) {
             handlebars_context.body = message.body;
@@ -137,15 +137,24 @@ console.log("--------");
 
         const headers_template = handlebars.compile(JSON.stringify(result_message.headers));
         const properties_template = handlebars.compile(JSON.stringify(result_message.properties));
-        const destination_template = handlebars.compile(result_message.destination);
-        const type_template = handlebars.compile(result_message.type);
-        const routing_key_template = handlebars.compile(result_message.routing_key);
-
+        
         result_message.headers = JSON.parse(headers_template(handlebars_context));
         result_message.properties = JSON.parse(properties_template(handlebars_context));
-        result_message.destination = destination_template(handlebars_context);
-        result_message.type = type_template(handlebars_context);
-        result_message.routing_key = routing_key_template(handlebars_context);
+
+        if (destination.destination !== undefined) {
+            const template = handlebars.compile(result_message.destination);
+            result_message.destination = template(handlebars_context);
+        }
+
+        if (destination.type !== undefined) {
+            const template = handlebars.compile(result_message.type);
+            result_message.type = template(handlebars_context);
+        }
+
+        if (destination.routing_key !== undefined) {
+            const template = handlebars.compile(result_message.routing_key);
+            result_message.routing_key = template(handlebars_context);
+        }
 
         if (typeof destination.handler === "string") {
             destination.handler = [destination.handler];
@@ -167,7 +176,6 @@ console.log("--------");
 
         }
 
-        
 /*
         console.log("response build (result) -----");
         console.log("original message:");

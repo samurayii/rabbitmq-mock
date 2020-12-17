@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as route_schema from "./lib/route_schema.json";
 import * as chalk from "chalk";
-import Ajv from "ajv";
+import * as Ajv from "ajv";
 import jtomler from "jtomler";
 import json_from_schema from "json-from-default-schema";
 import { ILogger } from "logger-flx";

@@ -3,7 +3,7 @@ import { Context, Controller, Get, Post } from "koa-ts-decorators";
 import { ILogger, Logger } from "logger-flx";
 import { IMocks, Mocks } from "../../lib/mocks";
 import * as chalk from "chalk";
-import Ajv from "ajv";
+import * as Ajv from "ajv";
 
 const post_state_schema = {
     type: "object"

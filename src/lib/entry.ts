@@ -3,7 +3,7 @@ import * as chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import * as finder from "find-package-json";
-import Ajv from "ajv";
+import * as Ajv from "ajv";
 import jtomler from "jtomler";
 import json_from_schema from "json-from-default-schema";
 import * as auth_user_schema from "./schemes/auth_user.json";

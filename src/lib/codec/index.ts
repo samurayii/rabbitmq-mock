@@ -1,4 +1,4 @@
-import { ICodec, ICodecDecodeMessage } from "./interfaces";
+import { ICodec, ICodecDecodeMessage, IConverter } from "./interfaces";
 import { CodecJson } from "./lib/codec_json";
 import { CodecBuffer } from "./lib/codec_buffer";
 import { CodecText } from "./lib/codec_text";
@@ -10,7 +10,7 @@ export * from "./interfaces";
 
 export class Codec implements ICodec {
 
-    private readonly _codec: ICodec
+    private readonly _codec:  IConverter
 
     constructor (
         private readonly _name: string,
@@ -42,7 +42,31 @@ export class Codec implements ICodec {
     }
 
     decode (message: Message): ICodecDecodeMessage {
-        return this._codec.decode(message);
+
+        const result_message: ICodecDecodeMessage = {
+            properties: {},
+            headers: {},
+            body: this._codec.convert(message)
+        };
+
+        if (typeof message.properties === "object") {
+
+            const message_properties = JSON.parse(JSON.stringify(message.properties));
+
+            if (typeof message_properties.headers === "object") {
+                result_message.headers = message_properties.headers;
+            }
+
+            delete message_properties.headers;
+
+            for (const key in message_properties) {
+                result_message.properties[key] = message_properties[key];
+            }
+
+        }
+
+        return result_message;
+
     }
 
 }

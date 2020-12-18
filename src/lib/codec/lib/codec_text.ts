@@ -1,7 +1,7 @@
-import { ICodec, ICodecDecodeMessage } from "../interfaces";
 import { Message } from "amqplib";
+import { IConverter } from "../interfaces";
 
-export class CodecText implements ICodec {
+export class CodecText implements IConverter {
 
     private readonly _type: string = "text"
 
@@ -9,25 +9,8 @@ export class CodecText implements ICodec {
         return this._type;
     }
     
-    decode (message: Message): ICodecDecodeMessage {
-        
-        const result_message: ICodecDecodeMessage = {
-            properties: {},
-            headers: {},
-            body: message.content.toString()
-        };
-
-        const message_properties = JSON.parse(JSON.stringify(message.properties));
-
-        result_message.headers = message_properties.headers;
-
-        delete message_properties.headers;
-
-        for (const key in message_properties) {
-            result_message.properties[key] = message_properties[key];
-        }
-
-        return result_message;
+    convert (message: Message): unknown {
+        return message.content.toString();
     }
 
 }

@@ -15,3 +15,8 @@ export interface ICodec {
     decode: (message: Message) => ICodecDecodeMessage
     readonly type: string
 }
+
+export interface IConverter {
+    convert: (message: Message) => unknown
+    readonly type: string
+}

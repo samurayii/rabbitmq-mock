@@ -107,7 +107,7 @@ export class Mock implements IMock {
 
         this._input.on("message", (message: IInputMessage) => {
 
-            this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message:`, "debug");
+            this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message ${chalk.grey(message.id)}:`, "debug");
             this._logger.log(message.message, "debug");
 
             const destination_config = this._router.get(message.message);
@@ -128,6 +128,8 @@ export class Mock implements IMock {
                     this._logger.log(error.stack, "debug");
                 }
 
+            } else {
+                this._logger.warn(`[Mock:${chalk.cyan(this._config.name)}] Message ${chalk.grey(message.id)} not routed`);
             }
 
             this._input.resolve(message.id);

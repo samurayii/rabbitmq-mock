@@ -107,15 +107,21 @@ export class Mock implements IMock {
 
         this._input.on("message", (message: IInputMessage) => {
 
+            this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message:`, "debug");
+            this._logger.log(message.message, "debug");
+
             const destination_config = this._router.get(message.message);
             
             if (destination_config !== undefined) {
 
                 try {
                     
-                    const response_builder = this._response_builder.build(destination_config, message.message, this._current_state, this._handlers);
+                    const result_message = this._response_builder.build(destination_config, message.message, this._current_state, this._handlers);
 
-                    this._output.push(response_builder);
+                    this._output.push(result_message);
+
+                    this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] << sended message:`, "debug");
+                    this._logger.log(result_message, "debug");
 
                 } catch (error) {
                     this._logger.error(`[Mock:${chalk.cyan(this._config.name)}] Response building. ${error}`);

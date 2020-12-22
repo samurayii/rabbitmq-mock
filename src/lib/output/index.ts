@@ -254,6 +254,7 @@ export class Output extends EventEmitter implements IOutput {
             
                     try {
                         this._channel.publish(destination, routing_key, Buffer.from(`${message.body}`), options);
+                        this._logger.log(`[Mock:${chalk.cyan(this._name)}:output] message sended to exchange ${chalk.gray(destination)}`, "dev");
                     } catch (error) {
                         this._logger.error(`[Mock:${chalk.cyan(this._name)}:output] Sending message to exchange ${chalk.gray(destination)}. ${error.message}`);
                         this._logger.log(error.stack, "debug");
@@ -263,6 +264,7 @@ export class Output extends EventEmitter implements IOutput {
                     
                     try {
                         this._channel.sendToQueue(destination, Buffer.from(`${message.body}`), options);
+                        this._logger.log(`[Mock:${chalk.cyan(this._name)}:output] message sended to queue ${chalk.gray(destination)}`, "dev");
                     } catch (error) {
                         this._logger.error(`[Mock:${chalk.cyan(this._name)}:output] Sending message to queue ${chalk.gray(destination)}. ${error.message}`);
                         this._logger.log(error.stack, "debug");

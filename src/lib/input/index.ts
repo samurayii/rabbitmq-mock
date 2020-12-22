@@ -209,6 +209,10 @@ export class Input extends EventEmitter implements IInput {
     _consume (): void {
 
         this._channel.consume(this._config.queue.name, (message: Message) => {
+
+            this._logger.log(`[Mock:${chalk.cyan(this._name)}:input] message received`, "dev");
+            this._logger.log(`[Mock:${chalk.cyan(this._name)}:input] Message:`, "debug");
+            this._logger.log(JSON.stringify(message, null, 2), "debug");
                     
             try {
               

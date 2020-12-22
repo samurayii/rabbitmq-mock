@@ -42,7 +42,7 @@ export class Codec implements ICodec {
     }
 
     decode (message: Message): ICodecDecodeMessage {
-
+        
         const result_message: ICodecDecodeMessage = {
             properties: {},
             headers: {},

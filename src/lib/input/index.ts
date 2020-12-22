@@ -228,7 +228,7 @@ export class Input extends EventEmitter implements IInput {
 
             } catch (error) {
                 this._logger.error(`[Mock:${chalk.cyan(this._name)}:input] Error parsing message. ${error.message}`);
-                this._logger.log(error.stack);
+                this._logger.log(error.stack, "debug");
             }
 
         }, { consumerTag: uuid() }).then( () => {
@@ -238,7 +238,7 @@ export class Input extends EventEmitter implements IInput {
         }).catch( (error) => {
 
             this._logger.error(chalk.red(`[Mock:${chalk.cyan(this._name)}:input] Error creating subscription to queue ${chalk.grey(this._config.queue.name)} on server ${chalk.grey(this._config.host)}:${chalk.grey(this._config.port)}. ${error}`));
-            this._logger.error(chalk.red(error));
+            this._logger.log(error.stack, "debug");
             this._reconnect();
 
         });

@@ -108,7 +108,12 @@ export class Mock implements IMock {
         this._input.on("message", (message: IInputMessage) => {
 
             this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message ${chalk.grey(message.id)}:`, "debug");
-            this._logger.log(message.message, "debug");
+
+            if (typeof message.message === "object") {
+                this._logger.log(JSON.stringify(message.message, null, 2), "debug");
+            } else {
+                this._logger.log(message.message, "debug");
+            }
 
             const destination_config = this._router.get(message.message);
             

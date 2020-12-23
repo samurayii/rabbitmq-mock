@@ -126,7 +126,12 @@ export class Mock implements IMock {
                     this._output.push(result_message);
 
                     this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] << sended message:`, "debug");
-                    this._logger.log(result_message, "debug");
+
+                    if (typeof result_message.body === "object") {
+                        this._logger.log(JSON.stringify(result_message.body, null, 2), "debug");
+                    } else {
+                        this._logger.log(result_message.body, "debug");
+                    }
 
                 } catch (error) {
                     this._logger.error(`[Mock:${chalk.cyan(this._config.name)}] Response building. ${error}`);

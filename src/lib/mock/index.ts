@@ -107,12 +107,10 @@ export class Mock implements IMock {
 
         this._input.on("message", (message: IInputMessage) => {
 
-            this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message ${chalk.grey(message.id)}:`, "debug");
-
             if (typeof message.message === "object") {
-                this._logger.log(JSON.stringify(message.message, null, 2), "debug");
+                this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message ${chalk.grey(message.id)}:\n${JSON.stringify(message.message, null, 2)}`, "debug");
             } else {
-                this._logger.log(message.message, "debug");
+                this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] >> received message ${chalk.grey(message.id)}:\n${message.message}`, "debug");
             }
 
             const destination_config = this._router.get(message.message);
@@ -125,12 +123,10 @@ export class Mock implements IMock {
 
                     this._output.push(result_message);
 
-                    this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] << sended message:`, "debug");
-
                     if (typeof result_message.body === "object") {
-                        this._logger.log(JSON.stringify(result_message.body, null, 2), "debug");
+                        this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] << sended message:\n${JSON.stringify(result_message.body, null, 2)}`, "debug");
                     } else {
-                        this._logger.log(result_message.body, "debug");
+                        this._logger.log(`[Mock:${chalk.cyan(this._config.name)}] << sended message:\n${result_message.body}`, "debug");
                     }
 
                 } catch (error) {

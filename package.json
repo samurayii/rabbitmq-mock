@@ -1,6 +1,6 @@
 {
     "name": "rabbitmq-mock",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "description": "Mock server for RabbitMQ",
     "main": "app.js",
     "docker_image": "samuray/rabbitmq-mock",
